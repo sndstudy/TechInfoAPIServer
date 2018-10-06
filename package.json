@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsc",
     "watch": "tsc --watch"
   },
@@ -12,6 +12,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/jest": "^23.3.3",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.3",
     "typescript": "^3.1.1"
   },
   "dependencies": {
