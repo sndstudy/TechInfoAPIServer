@@ -7,6 +7,7 @@
     "test": "jest",
     "build": "tsc",
     "watch": "tsc --watch",
+    "parcel:build": "npx parcel build ./src/app.js",
     "lint": "tslint 'src/**/*.ts' && echo 'Lint all pass'"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@types/jest": "^23.3.3",
     "jest": "^23.6.0",
+    "parcel-bundler": "^1.10.3",
     "ts-jest": "^23.10.3",
     "tslint": "^5.11.0",
     "typescript": "^3.1.1"
