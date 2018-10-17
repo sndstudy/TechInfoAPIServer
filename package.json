@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "test:coverage": "jest --coverage",
     "build": "tsc",
     "watch": "tsc --watch",
     "parcel:build": "npx parcel build ./src/app.js",
