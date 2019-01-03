@@ -3,7 +3,7 @@
         "module": "commonjs",
         "target": "es2017",
         "sourceMap": true,
-        "types" : ["node", "jest"] // 型定義ファイルの読み込み
+        "types" : ["node", "jest", "express"] // 型定義ファイルの読み込み
     },
     "exclude": [
         "node_modules"
