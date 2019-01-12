@@ -1,15 +1,14 @@
 import * as Express from "express";
-
-// const router = Express.Router();
-
-// router.get("/", (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-//     res.status(501).json({ message: 'Not Implemented.' });
-// });
+import axios from "axios";
 
 const app = Express();
 
-app.get("/", (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    return res.send("Hello Nyanko.");
+app.get("/", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+
+    // Qiita APIから取得する処理
+    const result: any = await axios.get("https://qiita.com/api/v2/items?page=1&per_page=1");
+
+    return res.send(JSON.stringify(result.data));
 });
 
 app.listen(3000, () => {

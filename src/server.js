@@ -1,15 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Express = require("express");
-// const router = Express.Router();
-// router.get("/", (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-//     res.status(501).json({ message: 'Not Implemented.' });
-// });
+const axios_1 = require("axios");
 const app = Express();
-app.get("/", (req, res, next) => {
-    return res.send("Hello Nyanko.");
+app.get("/", async (req, res, next) => {
+    // Qiita APIから取得する処理
+    const result = await axios_1.default.get("https://qiita.com/api/v2/items?page=1&per_page=1");
+    return res.send(JSON.stringify(result.data));
 });
 app.listen(3000, () => {
-    // console.log("Listen on port 3000.");
+    console.log("Listen on port 3000.");
 });
 //# sourceMappingURL=server.js.map
