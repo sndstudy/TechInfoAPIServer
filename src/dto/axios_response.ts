@@ -1,6 +1,8 @@
+import { IQiitaResponse } from "./qiita_response";
+
 export interface IAxiosResponse {
 
-    data?: object;
+    data?: any;
     status?: number;
     statusText?: string;
     headers?: object;
