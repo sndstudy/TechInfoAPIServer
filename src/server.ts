@@ -6,10 +6,21 @@ import { IItemResponse } from "./dto/item_response";
 
 const app = Express();
 
-app.get("/", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+// CORSを許可する
+app.use((req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
+
+app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
 
     const params: any = { params:
-                            { page: 1, per_page: 5 },
+                            {
+                                page: req.query.page,
+                                per_page: req.query.perPage,
+                                query: req.query.query,
+                             },
                         };
 
     // Qiita APIから取得する処理
@@ -24,7 +35,7 @@ app.get("/", async (req: Express.Request, res: Express.Response, next: Express.N
     // 必要なものだけ取り出す
     const itemData: IItemResponse[] = data.map((item) => {
         return {
-            tag: item.tags.map((tag) => tag.name),
+            tags: item.tags.map((tag) => tag.name),
             title: item.title,
             url: item.url,
         };
