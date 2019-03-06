@@ -1,14 +1,16 @@
-import * as Express from "express";
 import axios from "axios";
+import * as Express from "express";
+import * as firebase from "firebase-admin";
 import { IAxiosResponse } from "./dto/axios_response";
-import { IQiitaResponse } from "./dto/qiita_response";
 import { IItemResponse } from "./dto/item_response";
+import { IQiitaResponse } from "./dto/qiita_response";
+import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
 
 const app = Express();
 
 // CORSを許可する
 app.use((req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
@@ -42,7 +44,19 @@ app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Expr
 
     });
 
-    // 正常時とError時で書き分ける
+    // DBへ登録
+    const param: any = {...serviceAccount};
+    firebase.initializeApp({
+        credential: firebase.credential.cert(param),
+    });
+
+    const db: FirebaseFirestore.Firestore = firebase.firestore();
+    const docRef: FirebaseFirestore.DocumentReference = db.collection("tech-info-item").doc("hogehoge");
+
+    // ToDo:ドキュメントの構造を考える
+    await docRef.set({data: JSON.stringify(itemData)});
+
+    // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 
 });

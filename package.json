@@ -8,7 +8,7 @@
     "test:coverage": "jest --coverage",
     "build": "tsc",
     "watch": "tsc --watch",
-    "parcel:build": "npx parcel build ./src/server.js",
+    "parcel:build": "npx parcel build ./src/server.ts",
     "lint": "tslint 'src/**/*.ts' && echo 'Lint all pass'"
   },
   "keywords": [],
@@ -26,6 +26,7 @@
     "@types/express": "^4.16.0",
     "@types/node": "^10.12.18",
     "axios": "^0.18.0",
-    "express": "^4.16.4"
+    "express": "^4.16.4",
+    "firebase-admin": "^7.0.0"
   }
 }

@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Express = require("express");
 const axios_1 = require("axios");
+const Express = require("express");
+const firebase = require("firebase-admin");
+const serviceAccount = require("./tech-info-ss-serviceAccountKey.json");
 const app = Express();
 // CORSを許可する
 app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:8080");
+    res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
@@ -29,6 +31,15 @@ app.get("/qiita", async (req, res, next) => {
             url: item.url,
         };
     });
+    // DBへ登録
+    const param = Object.assign({}, serviceAccount);
+    firebase.initializeApp({
+        credential: firebase.credential.cert(param),
+    });
+    const db = firebase.firestore();
+    const docRef = db.collection("tech-info-item").doc("hogehoge");
+    // await docRef.set(itemData);
+    await docRef.set({ data: JSON.stringify(itemData) });
     // 正常時とError時で書き分ける
     return res.json(itemData);
 });
