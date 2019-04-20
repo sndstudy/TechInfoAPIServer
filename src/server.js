@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 const Express = require("express");
+// import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
+const cheerio_httpcli_1 = require("cheerio-httpcli");
 const app = Express();
 // CORSを許可する
 app.use((req, res, next) => {
@@ -39,6 +41,32 @@ app.get("/qiita", async (req, res, next) => {
     // const docRef: FirebaseFirestore.DocumentReference = db.collection("tech-info-item").doc("hogehoge2");
     // // ToDo:ドキュメントの構造を考える
     // await docRef.set({data: JSON.stringify(itemData)});
+    // ToDo:正常時とError時で書き分ける
+    return res.json(itemData);
+});
+app.get("/uxmilk", async (req, res, next) => {
+    const response = await cheerio_httpcli_1.fetch("https://uxmilk.jp/");
+    const itemData = [];
+    response.$(".feed__content a").each((index, element) => {
+        // リンク
+        console.log(element.attribs.href);
+        // 記事の題名
+        console.log(element.children[0].data);
+        itemData.push({
+            tags: [],
+            title: element.children[0].data.trim(),
+            url: element.attribs.href,
+        });
+    });
+    // const data: IQiitaResponse[]  = response.data;
+    // 必要なものだけ取り出す
+    // const itemData: IItemResponse[] = data.map((item) => {
+    //     return {
+    //         tags: item.tags.map((tag) => tag.name),
+    //         title: item.title,
+    //         url: item.url,
+    //     };
+    // });
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 });

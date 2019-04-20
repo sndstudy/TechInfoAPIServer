@@ -4,7 +4,8 @@ import * as firebase from "firebase-admin";
 import { IAxiosResponse } from "./dto/axios_response";
 import { IItemResponse } from "./dto/item_response";
 import { IQiitaResponse } from "./dto/qiita_response";
-import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
+// import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
+import { CheerioStaticEx, FetchResponse, fetch as cheerioFetch, FetchResult } from "cheerio-httpcli";
 
 const app = Express();
 
@@ -56,6 +57,28 @@ app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Expr
 
     // // ToDo:ドキュメントの構造を考える
     // await docRef.set({data: JSON.stringify(itemData)});
+
+    // ToDo:正常時とError時で書き分ける
+    return res.json(itemData);
+
+});
+
+app.get("/uxmilk", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+
+    const response: FetchResult = await cheerioFetch("https://uxmilk.jp/");
+
+    const itemData: IItemResponse[] = [];
+
+    // UX MILK 新着記事の1ページ目から取得する
+    response.$(".feed__content a").each((index: number, element: CheerioElement) => {
+
+        itemData.push({
+            tags: [],
+            title: element.children[0].data.trim(),
+            url: element.attribs.href,
+        });
+
+    });
 
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
