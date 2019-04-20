@@ -45,16 +45,17 @@ app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Expr
     });
 
     // DBへ登録
-    const param: any = {...serviceAccount};
-    firebase.initializeApp({
-        credential: firebase.credential.cert(param),
-    });
+    // ToDo: DBはモジュールとして分ける
+    // const param: any = {...serviceAccount};
+    // firebase.initializeApp({
+    //     credential: firebase.credential.cert(param),
+    // });
 
-    const db: FirebaseFirestore.Firestore = firebase.firestore();
-    const docRef: FirebaseFirestore.DocumentReference = db.collection("tech-info-item").doc("hogehoge");
+    // const db: FirebaseFirestore.Firestore = firebase.firestore();
+    // const docRef: FirebaseFirestore.DocumentReference = db.collection("tech-info-item").doc("hogehoge2");
 
-    // ToDo:ドキュメントの構造を考える
-    await docRef.set({data: JSON.stringify(itemData)});
+    // // ToDo:ドキュメントの構造を考える
+    // await docRef.set({data: JSON.stringify(itemData)});
 
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);

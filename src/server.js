@@ -2,8 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 const Express = require("express");
-const firebase = require("firebase-admin");
-const serviceAccount = require("./tech-info-ss-serviceAccountKey.json");
 const app = Express();
 // CORSを許可する
 app.use((req, res, next) => {
@@ -32,15 +30,16 @@ app.get("/qiita", async (req, res, next) => {
         };
     });
     // DBへ登録
-    const param = Object.assign({}, serviceAccount);
-    firebase.initializeApp({
-        credential: firebase.credential.cert(param),
-    });
-    const db = firebase.firestore();
-    const docRef = db.collection("tech-info-item").doc("hogehoge");
-    // await docRef.set(itemData);
-    await docRef.set({ data: JSON.stringify(itemData) });
-    // 正常時とError時で書き分ける
+    // ToDo: DBはモジュールとして分ける
+    // const param: any = {...serviceAccount};
+    // firebase.initializeApp({
+    //     credential: firebase.credential.cert(param),
+    // });
+    // const db: FirebaseFirestore.Firestore = firebase.firestore();
+    // const docRef: FirebaseFirestore.DocumentReference = db.collection("tech-info-item").doc("hogehoge2");
+    // // ToDo:ドキュメントの構造を考える
+    // await docRef.set({data: JSON.stringify(itemData)});
+    // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 });
 app.listen(3000, () => {
