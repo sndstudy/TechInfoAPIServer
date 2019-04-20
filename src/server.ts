@@ -41,6 +41,7 @@ app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Expr
             tags: item.tags.map((tag) => tag.name),
             title: item.title,
             url: item.url,
+            tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
         };
 
     });

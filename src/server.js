@@ -29,6 +29,7 @@ app.get("/qiita", async (req, res, next) => {
             tags: item.tags.map((tag) => tag.name),
             title: item.title,
             url: item.url,
+            tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
         };
     });
     // DBへ登録
@@ -47,26 +48,14 @@ app.get("/qiita", async (req, res, next) => {
 app.get("/uxmilk", async (req, res, next) => {
     const response = await cheerio_httpcli_1.fetch("https://uxmilk.jp/");
     const itemData = [];
+    // UX MILK 新着記事の1ページ目から取得する
     response.$(".feed__content a").each((index, element) => {
-        // リンク
-        console.log(element.attribs.href);
-        // 記事の題名
-        console.log(element.children[0].data);
         itemData.push({
             tags: [],
             title: element.children[0].data.trim(),
             url: element.attribs.href,
         });
     });
-    // const data: IQiitaResponse[]  = response.data;
-    // 必要なものだけ取り出す
-    // const itemData: IItemResponse[] = data.map((item) => {
-    //     return {
-    //         tags: item.tags.map((tag) => tag.name),
-    //         title: item.title,
-    //         url: item.url,
-    //     };
-    // });
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 });
