@@ -19,13 +19,13 @@ app.use((req: Express.Request, res: Express.Response, next: Express.NextFunction
 
 app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
 
-    const params: any = { params:
-                            {
-                                page: req.query.page,
-                                per_page: req.query.perPage,
-                                query: req.query.query,
-                             },
-                        };
+    const params: any = { 
+      params: {
+        page: req.query.page,
+        per_page: req.query.perPage,
+        query: req.query.query,
+      },
+    };
 
     // Qiita APIから取得する処理
     const response: IAxiosResponse =
@@ -102,12 +102,13 @@ app.get("/hackernews", async (req: Express.Request, res: Express.Response, next:
                                 page: 1,
                                 hitsPerPage: 20,
                                 query: 'javascript',
+                                tags: 'story',
                             },
     };
 
     // Hacker News APIから取得する処理
     const response: IAxiosResponse =
-        await axios.get<IAxiosResponse>("http://hn.algolia.com/api/v1/search", params).catch(
+        await axios.get<IAxiosResponse>("http://hn.algolia.com/api/v1/search_by_date", params).catch(
                                         (err: IAxiosResponse): IAxiosResponse => {
                                             return err;
                                         });

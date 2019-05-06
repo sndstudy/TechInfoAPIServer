@@ -71,10 +71,11 @@ app.get("/hackernews", async (req, res, next) => {
             page: 1,
             hitsPerPage: 20,
             query: 'javascript',
+            tags: 'story',
         },
     };
     // Hacker News APIから取得する処理
-    const response = await axios_1.default.get("http://hn.algolia.com/api/v1/search", params).catch((err) => {
+    const response = await axios_1.default.get("http://hn.algolia.com/api/v1/search_by_date", params).catch((err) => {
         return err;
     });
     const data = response.data;
