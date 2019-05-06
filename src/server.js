@@ -59,6 +59,37 @@ app.get("/uxmilk", async (req, res, next) => {
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 });
+app.get("/hackernews", async (req, res, next) => {
+    // const params: any = { params:
+    //                         {
+    //                             page: req.query.page,
+    //                             hitsPerPage: req.query.perPage,
+    //                             query: req.query.query,
+    //                          },
+    //                     };
+    const params = { params: {
+            page: 1,
+            hitsPerPage: 20,
+            query: 'javascript',
+        },
+    };
+    // Hacker News APIから取得する処理
+    const response = await axios_1.default.get("http://hn.algolia.com/api/v1/search", params).catch((err) => {
+        return err;
+    });
+    const data = response.data;
+    // 必要なものだけ取り出す
+    const itemData = data.hits.map((item) => {
+        return {
+            tags: ["javascript"],
+            title: item.title,
+            url: item.url,
+            tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
+        };
+    });
+    // ToDo:正常時とError時で書き分ける
+    return res.json(itemData);
+});
 app.listen(3000, () => {
     console.log("Listen on port 3000.");
 });

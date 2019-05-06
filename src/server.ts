@@ -2,6 +2,7 @@ import axios from "axios";
 import * as Express from "express";
 import * as firebase from "firebase-admin";
 import { IAxiosResponse } from "./dto/axios_response";
+import { IHackerNewsResponse } from "./dto/hackernews_response"
 import { IItemResponse } from "./dto/item_response";
 import { IQiitaResponse } from "./dto/qiita_response";
 // import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
@@ -78,6 +79,49 @@ app.get("/uxmilk", async (req: Express.Request, res: Express.Response, next: Exp
             title: element.children[0].data.trim(),
             url: element.attribs.href,
         });
+
+    });
+
+    // ToDo:正常時とError時で書き分ける
+    return res.json(itemData);
+
+});
+
+app.get("/hackernews", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+
+    // const params: any = { params:
+    //                         {
+    //                             page: req.query.page,
+    //                             hitsPerPage: req.query.perPage,
+    //                             query: req.query.query,
+    //                          },
+    //                     };
+
+    const params: any = { params:
+                            {
+                                page: 1,
+                                hitsPerPage: 20,
+                                query: 'javascript',
+                            },
+    };
+
+    // Hacker News APIから取得する処理
+    const response: IAxiosResponse =
+        await axios.get<IAxiosResponse>("http://hn.algolia.com/api/v1/search", params).catch(
+                                        (err: IAxiosResponse): IAxiosResponse => {
+                                            return err;
+                                        });
+
+    const data: IHackerNewsResponse  = response.data;
+
+    // 必要なものだけ取り出す
+    const itemData: IItemResponse[] = data.hits.map((item) => {
+        return {
+            tags: ["javascript"],
+            title: item.title,
+            url: item.url,
+            tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
+        };
 
     });
 
