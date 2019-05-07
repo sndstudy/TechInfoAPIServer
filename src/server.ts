@@ -5,7 +5,7 @@ import { IAxiosResponse } from "./dto/axios_response";
 import { IHackerNewsResponse } from "./dto/hackernews_response"
 import { IItemResponse } from "./dto/item_response";
 import { IQiitaResponse } from "./dto/qiita_response";
-// import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
+import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
 import { CheerioStaticEx, FetchResponse, fetch as cheerioFetch, FetchResult } from "cheerio-httpcli";
 
 const app = Express();
@@ -21,9 +21,9 @@ app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Expr
 
     const params: any = { 
       params: {
-        page: req.query.page,
-        per_page: req.query.perPage,
-        query: req.query.query,
+        page: req.query.page || 1,
+        per_page: req.query.perPage || 20,
+        query: req.query.query || 'tag:JavaScript',
       },
     };
 
@@ -89,21 +89,12 @@ app.get("/uxmilk", async (req: Express.Request, res: Express.Response, next: Exp
 
 app.get("/hackernews", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
 
-    // const params: any = { params:
-    //                         {
-    //                             page: req.query.page,
-    //                             hitsPerPage: req.query.perPage,
-    //                             query: req.query.query,
-    //                          },
-    //                     };
-
-    const params: any = { params:
-                            {
-                                page: 1,
-                                hitsPerPage: 20,
-                                query: 'javascript',
-                                tags: 'story',
-                            },
+    const params: any = { 
+      params: {
+        hitsPerPage: req.query.perPage || 20,
+        query: req.query.query || 'javascript',
+        tags: req.query.tags || 'story',
+      },
     };
 
     // Hacker News APIから取得する処理
@@ -125,6 +116,19 @@ app.get("/hackernews", async (req: Express.Request, res: Express.Response, next:
         };
 
     });
+
+    // ToDo: DBはモジュールとして分ける
+    const param: any = {...serviceAccount};
+    firebase.initializeApp({
+        credential: firebase.credential.cert(param),
+    });
+
+    const db: FirebaseFirestore.Firestore = firebase.firestore();
+    const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc("javascript").
+                                                        collection("jikan").doc("kahen");
+
+    // ToDo:ドキュメントの構造を考える
+    await docRef.set({data: itemData[0]});
 
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
