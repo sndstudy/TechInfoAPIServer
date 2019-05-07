@@ -1,12 +1,11 @@
 import axios from "axios";
 import * as Express from "express";
-import * as firebase from "firebase-admin";
 import { IAxiosResponse } from "./dto/axios_response";
 import { IHackerNewsResponse } from "./dto/hackernews_response"
 import { IItemResponse } from "./dto/item_response";
 import { IQiitaResponse } from "./dto/qiita_response";
-import * as serviceAccount from "./tech-info-ss-serviceAccountKey.json";
 import { CheerioStaticEx, FetchResponse, fetch as cheerioFetch, FetchResult } from "cheerio-httpcli";
+import { HackerNewsDbAccess } from "./db/hackernews_db_access";
 
 const app = Express();
 
@@ -48,17 +47,6 @@ app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Expr
     });
 
     // DBへ登録
-    // ToDo: DBはモジュールとして分ける
-    // const param: any = {...serviceAccount};
-    // firebase.initializeApp({
-    //     credential: firebase.credential.cert(param),
-    // });
-
-    // const db: FirebaseFirestore.Firestore = firebase.firestore();
-    // const docRef: FirebaseFirestore.DocumentReference = db.collection("tech-info-item").doc("hogehoge2");
-
-    // // ToDo:ドキュメントの構造を考える
-    // await docRef.set({data: JSON.stringify(itemData)});
 
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
@@ -117,18 +105,8 @@ app.get("/hackernews", async (req: Express.Request, res: Express.Response, next:
 
     });
 
-    // ToDo: DBはモジュールとして分ける
-    const param: any = {...serviceAccount};
-    firebase.initializeApp({
-        credential: firebase.credential.cert(param),
-    });
-
-    const db: FirebaseFirestore.Firestore = firebase.firestore();
-    const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc("javascript").
-                                                        collection("jikan").doc("kahen");
-
-    // ToDo:ドキュメントの構造を考える
-    await docRef.set({data: itemData[0]});
+    const hackernewsDb: HackerNewsDbAccess = new HackerNewsDbAccess();
+    hackernewsDb.insertItems(itemData);
 
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);

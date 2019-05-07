@@ -2,9 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 const Express = require("express");
-const firebase = require("firebase-admin");
-const serviceAccount = require("./tech-info-ss-serviceAccountKey.json");
 const cheerio_httpcli_1 = require("cheerio-httpcli");
+const hackernews_db_access_1 = require("./db/hackernews_db_access");
 const app = Express();
 // CORSを許可する
 app.use((req, res, next) => {
@@ -35,15 +34,6 @@ app.get("/qiita", async (req, res, next) => {
         };
     });
     // DBへ登録
-    // ToDo: DBはモジュールとして分ける
-    // const param: any = {...serviceAccount};
-    // firebase.initializeApp({
-    //     credential: firebase.credential.cert(param),
-    // });
-    // const db: FirebaseFirestore.Firestore = firebase.firestore();
-    // const docRef: FirebaseFirestore.DocumentReference = db.collection("tech-info-item").doc("hogehoge2");
-    // // ToDo:ドキュメントの構造を考える
-    // await docRef.set({data: JSON.stringify(itemData)});
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 });
@@ -84,14 +74,20 @@ app.get("/hackernews", async (req, res, next) => {
         };
     });
     // ToDo: DBはモジュールとして分ける
-    const param = Object.assign({}, serviceAccount);
-    firebase.initializeApp({
-        credential: firebase.credential.cert(param),
-    });
-    const db = firebase.firestore();
-    const docRef = db.collection("hackernews").doc("javascript").collection("jikan").doc("kahen");
-    // ToDo:ドキュメントの構造を考える
-    await docRef.set({ data: itemData[0] });
+    // const param: any = {...serviceAccount};
+    // firebase.initializeApp({
+    //     credential: firebase.credential.cert(param),
+    // });
+    // const db: FirebaseFirestore.Firestore = firebase.firestore();
+    // const batch: FirebaseFirestore.WriteBatch = db.batch();
+    // // ToDo:ドキュメントの構造を考える
+    // for(let data of itemData) {
+    //   const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc("javascript").collection("jikan").doc();
+    //   await batch.set(docRef, data);
+    // }
+    // await batch.commit();
+    const hackernewsDb = new hackernews_db_access_1.HackerNewsDbAccess();
+    hackernewsDb.insertItems(itemData);
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 });
