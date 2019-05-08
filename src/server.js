@@ -27,7 +27,7 @@ app.get("/qiita", async (req, res, next) => {
     // 必要なものだけ取り出す
     const itemData = data.map((item) => {
         return {
-            tags: [req.query.query] || ['javascript'],
+            tags: (req.query.query) ? [req.query.query] : ['javascript'],
             title: item.title,
             url: item.url,
             tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
@@ -80,7 +80,7 @@ app.get("/hackernews", async (req, res, next) => {
                 tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
             };
         });
-        hackernewsDb.insertItems(itemData, nowSeconds);
+        hackernewsDb.insertItems(itemData, nowSeconds, req.query.query || 'javascript');
     }
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);

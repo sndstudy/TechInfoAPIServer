@@ -4,7 +4,7 @@ import { IAxiosResponse } from "./dto/axios_response";
 import { IHackerNewsResponse } from "./dto/hackernews_response"
 import { IItemResponse } from "./dto/item_response";
 import { IQiitaResponse } from "./dto/qiita_response";
-import { CheerioStaticEx, FetchResponse, fetch as cheerioFetch, FetchResult } from "cheerio-httpcli";
+import { fetch as cheerioFetch, FetchResult } from "cheerio-httpcli";
 import { HackerNewsDbAccess } from "./db/hackernews_db_access";
 
 const app = Express();
@@ -115,7 +115,7 @@ app.get("/hackernews", async (req: Express.Request, res: Express.Response, next:
         });
 
 
-        hackernewsDb.insertItems(itemData, nowSeconds);
+        hackernewsDb.insertItems(itemData, nowSeconds, req.query.query || 'javascript');
     }
 
     // ToDo:正常時とError時で書き分ける

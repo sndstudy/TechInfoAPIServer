@@ -8,7 +8,7 @@
     "test:coverage": "jest --coverage",
     "build": "tsc",
     "watch": "tsc --watch",
-    "parcel:build": "npx parcel build ./src/server.ts",
+    "parcel:build": "npm run build && npx parcel build --target node ./src/server.js",
     "lint": "tslint 'src/**/*.ts' && echo 'Lint all pass'"
   },
   "keywords": [],

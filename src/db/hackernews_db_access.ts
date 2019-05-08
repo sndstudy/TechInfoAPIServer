@@ -28,13 +28,13 @@ export class HackerNewsDbAccess extends BaseDbAccess {
 
   }
 
-  async insertItems(itemData: IItemResponse[], nowSeconds: number): Promise<void> {
+  async insertItems(itemData: IItemResponse[], nowSeconds: number, tagName: string): Promise<void> {
           
     const db: FirebaseFirestore.Firestore = BaseDbAccess.app.firestore();
     const batch: FirebaseFirestore.WriteBatch = db.batch();
   
     for(let data of itemData) {
-      const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc("javascript").collection(`${nowSeconds}`).doc();
+      const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc(tagName).collection(`${nowSeconds}`).doc();
       await batch.set(docRef, data);
     }
 

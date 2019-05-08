@@ -19,11 +19,11 @@ class HackerNewsDbAccess extends base_db_access_1.BaseDbAccess {
         }
         return returnItems;
     }
-    async insertItems(itemData, nowSeconds) {
+    async insertItems(itemData, nowSeconds, tagName) {
         const db = base_db_access_1.BaseDbAccess.app.firestore();
         const batch = db.batch();
         for (let data of itemData) {
-            const docRef = db.collection("hackernews").doc("javascript").collection(`${nowSeconds}`).doc();
+            const docRef = db.collection("hackernews").doc(tagName).collection(`${nowSeconds}`).doc();
             await batch.set(docRef, data);
         }
         await batch.commit();

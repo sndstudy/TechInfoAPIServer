@@ -12,6 +12,6 @@ export abstract class BaseDbAccess {
 
     abstract async selectItems(targetSeconds : number) : Promise<IItemResponse[]>;
 
-    abstract async insertItems(itemData: IItemResponse[], nowSeconds: number) :Promise<void>;
+    abstract async insertItems(itemData: IItemResponse[], nowSeconds: number, tagName: string) :Promise<void>;
 
 }
