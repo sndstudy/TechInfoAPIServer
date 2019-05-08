@@ -38,7 +38,7 @@ app.get("/qiita", async (req: Express.Request, res: Express.Response, next: Expr
     // 必要なものだけ取り出す
     const itemData: IItemResponse[] = data.map((item) => {
         return {
-            tags: item.tags.map((tag) => tag.name),
+            tags: (req.query.query)?[req.query.query] : ['javascript'],
             title: item.title,
             url: item.url,
             tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
@@ -85,28 +85,38 @@ app.get("/hackernews", async (req: Express.Request, res: Express.Response, next:
       },
     };
 
-    // Hacker News APIから取得する処理
-    const response: IAxiosResponse =
-        await axios.get<IAxiosResponse>("http://hn.algolia.com/api/v1/search_by_date", params).catch(
-                                        (err: IAxiosResponse): IAxiosResponse => {
-                                            return err;
-                                        });
+    // DBselect 時間　（8時間に一回取得する）
+    const nowSeconds: number = Math.floor(Date.now() / 1000);
+    const targetSeconds: number = nowSeconds - (60 * 60 * 8);
 
-    const data: IHackerNewsResponse  = response.data;
-
-    // 必要なものだけ取り出す
-    const itemData: IItemResponse[] = data.hits.map((item) => {
-        return {
-            tags: ["javascript"],
-            title: item.title,
-            url: item.url,
-            tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
-        };
-
-    });
-
+    // コレクション一覧取得
     const hackernewsDb: HackerNewsDbAccess = new HackerNewsDbAccess();
-    hackernewsDb.insertItems(itemData);
+    let itemData: IItemResponse[]  = await hackernewsDb.selectItems(targetSeconds);
+
+    if(itemData.length === 0){
+
+        // Hacker News APIから取得する処理
+        const response: IAxiosResponse =
+            await axios.get<IAxiosResponse>("http://hn.algolia.com/api/v1/search_by_date", params).catch(
+                                            (err: IAxiosResponse): IAxiosResponse => {
+                                                return err;
+                                            });
+
+        const data: IHackerNewsResponse  = response.data;
+
+        // 必要なものだけ取り出す
+        itemData = data.hits.map((item) => {
+            return {
+                tags: (req.query.query)?[req.query.query] : ['javascript'],
+                title: item.title,
+                url: item.url,
+                tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
+            };
+        });
+
+
+        hackernewsDb.insertItems(itemData, nowSeconds);
+    }
 
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);

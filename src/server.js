@@ -27,7 +27,7 @@ app.get("/qiita", async (req, res, next) => {
     // 必要なものだけ取り出す
     const itemData = data.map((item) => {
         return {
-            tags: item.tags.map((tag) => tag.name),
+            tags: [req.query.query] || ['javascript'],
             title: item.title,
             url: item.url,
             tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
@@ -59,35 +59,29 @@ app.get("/hackernews", async (req, res, next) => {
             tags: req.query.tags || 'story',
         },
     };
-    // Hacker News APIから取得する処理
-    const response = await axios_1.default.get("http://hn.algolia.com/api/v1/search_by_date", params).catch((err) => {
-        return err;
-    });
-    const data = response.data;
-    // 必要なものだけ取り出す
-    const itemData = data.hits.map((item) => {
-        return {
-            tags: ["javascript"],
-            title: item.title,
-            url: item.url,
-            tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
-        };
-    });
-    // ToDo: DBはモジュールとして分ける
-    // const param: any = {...serviceAccount};
-    // firebase.initializeApp({
-    //     credential: firebase.credential.cert(param),
-    // });
-    // const db: FirebaseFirestore.Firestore = firebase.firestore();
-    // const batch: FirebaseFirestore.WriteBatch = db.batch();
-    // // ToDo:ドキュメントの構造を考える
-    // for(let data of itemData) {
-    //   const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc("javascript").collection("jikan").doc();
-    //   await batch.set(docRef, data);
-    // }
-    // await batch.commit();
+    // DBselect 時間　（8時間に一回取得する）
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const targetSeconds = nowSeconds - (60 * 60 * 8);
+    // コレクション一覧取得
     const hackernewsDb = new hackernews_db_access_1.HackerNewsDbAccess();
-    hackernewsDb.insertItems(itemData);
+    let itemData = await hackernewsDb.selectItems(targetSeconds);
+    if (itemData.length === 0) {
+        // Hacker News APIから取得する処理
+        const response = await axios_1.default.get("http://hn.algolia.com/api/v1/search_by_date", params).catch((err) => {
+            return err;
+        });
+        const data = response.data;
+        // 必要なものだけ取り出す
+        itemData = data.hits.map((item) => {
+            return {
+                tags: (req.query.query) ? [req.query.query] : ['javascript'],
+                title: item.title,
+                url: item.url,
+                tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,
+            };
+        });
+        hackernewsDb.insertItems(itemData, nowSeconds);
+    }
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 });
