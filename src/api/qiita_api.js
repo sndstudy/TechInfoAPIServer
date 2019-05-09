@@ -4,7 +4,7 @@ const axios_1 = require("axios");
 const Express = require("express");
 const qiita_db_access_1 = require("../db/qiita_db_access");
 exports.router = Express.Router();
-exports.router.get("/", async (req, res, next) => {
+exports.router.route("/").get(async (req, res, next) => {
     const params = {
         params: {
             page: req.query.page || 1,
@@ -37,5 +37,11 @@ exports.router.get("/", async (req, res, next) => {
     }
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
+}).post(async (req, res) => {
+    return res.status(405).json({ message: "Method Not Allowed" });
+}).put(async (req, res) => {
+    return res.status(405).json({ message: "Method Not Allowed" });
+}).delete(async (req, res) => {
+    return res.status(405).json({ message: "Method Not Allowed" });
 });
 //# sourceMappingURL=qiita_api.js.map

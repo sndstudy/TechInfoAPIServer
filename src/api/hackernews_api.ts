@@ -7,7 +7,7 @@ import { IHackerNewsResponse } from "../dto/hackernews_response";
 
 export const router = Express.Router();
 
-router.get("/", async (req: Express.Request, res: Express.Response) => {
+router.route("/").get(async (req: Express.Request, res: Express.Response) => {
 
     const params: any = { 
       params: {
@@ -50,6 +50,12 @@ router.get("/", async (req: Express.Request, res: Express.Response) => {
     }
 
     // ToDo:正常時とError時で書き分ける
-    return res.json(itemData);
+    return res.status(200).json(itemData);
 
+}).post(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
+}).put(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
+}).delete(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
 });

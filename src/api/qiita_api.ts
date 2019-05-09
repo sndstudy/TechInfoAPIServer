@@ -7,7 +7,7 @@ import { IQiitaResponse } from "../dto/qiita_response";
 
 export const router = Express.Router();
 
-router.get("/", async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+router.route("/").get(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
 
     const params: any = { 
       params: {
@@ -53,4 +53,10 @@ router.get("/", async (req: Express.Request, res: Express.Response, next: Expres
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 
+}).post(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
+}).put(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
+}).delete(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
 });

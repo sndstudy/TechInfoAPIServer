@@ -4,7 +4,7 @@ import { fetch as cheerioFetch, FetchResult } from "cheerio-httpcli";
 
 export const router = Express.Router();
 
-router.get("/uxmilk", async (req: Express.Request, res: Express.Response) => {
+router.route("/").get(async (req: Express.Request, res: Express.Response) => {
 
     const response: FetchResult = await cheerioFetch("https://uxmilk.jp/");
 
@@ -24,4 +24,10 @@ router.get("/uxmilk", async (req: Express.Request, res: Express.Response) => {
     // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
 
+}).post(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
+}).put(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
+}).delete(async (req: Express.Request, res: Express.Response) => {
+    return res.status(405).json({message: "Method Not Allowed"});
 });

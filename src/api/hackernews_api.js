@@ -4,7 +4,7 @@ const axios_1 = require("axios");
 const Express = require("express");
 const hackernews_db_access_1 = require("../db/hackernews_db_access");
 exports.router = Express.Router();
-exports.router.get("/", async (req, res) => {
+exports.router.route("/").get(async (req, res) => {
     const params = {
         params: {
             hitsPerPage: req.query.perPage || 20,
@@ -36,6 +36,12 @@ exports.router.get("/", async (req, res) => {
         hackernewsDb.insertItems(itemData, nowSeconds, req.query.query || 'javascript');
     }
     // ToDo:正常時とError時で書き分ける
-    return res.json(itemData);
+    return res.status(200).json(itemData);
+}).post(async (req, res) => {
+    return res.status(405).json({ message: "Method Not Allowed" });
+}).put(async (req, res) => {
+    return res.status(405).json({ message: "Method Not Allowed" });
+}).delete(async (req, res) => {
+    return res.status(405).json({ message: "Method Not Allowed" });
 });
 //# sourceMappingURL=hackernews_api.js.map
