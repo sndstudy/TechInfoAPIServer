@@ -3,3 +3,5 @@
 /.cache
 /coverage
 tech-info-ss-serviceAccountKey.json
+*.js
+*.js.map
