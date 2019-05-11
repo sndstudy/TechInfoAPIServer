@@ -5,14 +5,16 @@ class QiitaDbAccess extends base_db_access_1.BaseDbAccess {
     async selectItems(targetSeconds) {
         const db = base_db_access_1.BaseDbAccess.app.firestore();
         const docRef = db.collection("qiita").doc("javascript");
-        const collections = await docRef.getCollections();
+        const collections = await docRef.getCollections().catch(() => { throw new Error("Firebase エラー"); });
+        ;
         // 8時間以内のデータがあるか確認(現在時刻から8時間前と比較)
         const selectResult = collections.find((colRef) => {
             return +colRef.id > targetSeconds;
         });
         const returnItems = [];
         if (selectResult) {
-            const data = await db.collection("qiita").doc("javascript").collection(selectResult.id).get();
+            const data = await db.collection("qiita").doc("javascript").collection(selectResult.id).get().catch(() => { throw new Error("Firebase エラー"); });
+            ;
             data.forEach((snapshot) => {
                 returnItems.push(snapshot.data());
             });
@@ -24,9 +26,10 @@ class QiitaDbAccess extends base_db_access_1.BaseDbAccess {
         const batch = db.batch();
         for (let data of itemData) {
             const docRef = db.collection("qiita").doc(tagName).collection(`${nowSeconds}`).doc();
-            await batch.set(docRef, data);
+            batch.set(docRef, data);
         }
-        await batch.commit();
+        await batch.commit().catch(() => { throw new Error("Firebase エラー"); });
+        ;
     }
 }
 exports.QiitaDbAccess = QiitaDbAccess;

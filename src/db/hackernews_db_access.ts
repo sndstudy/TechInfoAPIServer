@@ -7,7 +7,8 @@ export class HackerNewsDbAccess extends BaseDbAccess {
     
     const db: FirebaseFirestore.Firestore = BaseDbAccess.app.firestore();
     const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc("javascript");
-    const collections: FirebaseFirestore.CollectionReference[] = await docRef.getCollections();
+    const collections: FirebaseFirestore.CollectionReference[] = 
+      await docRef.getCollections().catch(() => {throw new Error("Firebase エラー")});
     
     // 8時間以内のデータがあるか確認(現在時刻から8時間前と比較)
     const selectResult: FirebaseFirestore.CollectionReference = collections.find((colRef: FirebaseFirestore.CollectionReference) => {
@@ -17,7 +18,8 @@ export class HackerNewsDbAccess extends BaseDbAccess {
     const returnItems: IItemResponse[] = [];
 
     if(selectResult){
-      const data: FirebaseFirestore.QuerySnapshot = await db.collection("hackernews").doc("javascript").collection(selectResult.id).get();
+      const data: FirebaseFirestore.QuerySnapshot = 
+        await db.collection("hackernews").doc("javascript").collection(selectResult.id).get().catch(() => {throw new Error("Firebase エラー")});;
       
       data.forEach((snapshot: FirebaseFirestore.QueryDocumentSnapshot ) => {
         returnItems.push(snapshot.data() as IItemResponse);
@@ -35,10 +37,10 @@ export class HackerNewsDbAccess extends BaseDbAccess {
   
     for(let data of itemData) {
       const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc(tagName).collection(`${nowSeconds}`).doc();
-      await batch.set(docRef, data);
+      batch.set(docRef, data);
     }
 
-    await batch.commit();
+    await batch.commit().catch(() => {throw new Error("Firebase エラー")});;
   }
 
 }
