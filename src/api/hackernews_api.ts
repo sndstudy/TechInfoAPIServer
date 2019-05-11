@@ -11,6 +11,7 @@ export const router = Express.Router();
 
 router.route("/").get(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
 
+  try {
     const params: any = { 
       params: {
         hitsPerPage: req.query.perPage || 20,
@@ -26,27 +27,15 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
     // コレクション一覧取得
     const hackernewsDb: HackerNewsDbAccess = new HackerNewsDbAccess();
 
-    let itemData: IItemResponse[] = [];
-    
-    try {
-      itemData = await hackernewsDb.selectItems(targetSeconds);
-    } catch (err) {
-      return next(ErrorEnum.InternalServerError);
-    }
+    let itemData: IItemResponse[] = await hackernewsDb.selectItems(targetSeconds);
     
     if(itemData.length === 0){
 
         // Hacker News APIから取得する処理
-        let response: IAxiosResponse;
-
-        try {
-          response = await axios.get<IAxiosResponse>("http://hn.algolia.com/api/v1/search_by_date", params).catch(
+        const response: IAxiosResponse = await axios.get<IAxiosResponse>("http://hn.algolia.com/api/v1/search_by_date", params).catch(
                                               (err: IAxiosResponse): IAxiosResponse => {
                                                   throw new Error("axios エラー");
                                               });
-                                            }catch(err){
-                                              return next(ErrorEnum.InternalServerError);
-                                            };
 
         const data: IHackerNewsResponse  = response.data;
 
@@ -60,15 +49,14 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
             };
         });
 
-        try {
           await hackernewsDb.insertItems(itemData, nowSeconds, req.query.query || 'javascript');
-        } catch (err) {
-          return next(ErrorEnum.InternalServerError);
-        }
     }
 
-    // ToDo:正常時とError時で書き分ける
     return res.status(200).json(itemData);
+
+  } catch (err) {
+    return next(ErrorEnum.InternalServerError);
+  }
 
 }).post(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     return next(ErrorEnum.MethodNotAllowed);

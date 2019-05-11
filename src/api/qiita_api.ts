@@ -10,6 +10,8 @@ export const router = Express.Router();
 
 router.route("/").get(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
 
+  try {
+
     const params: any = { 
       params: {
         page: req.query.page || 1,
@@ -32,7 +34,7 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
       const response: IAxiosResponse =
           await axios.get<IAxiosResponse>("https://qiita.com/api/v2/items", params).catch(
                                           (err: IAxiosResponse): IAxiosResponse => {
-                                              return err;
+                                            throw new Error("axios エラー");
                                           });
 
       const data: IQiitaResponse[]  = response.data;
@@ -51,8 +53,11 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
       qiitaDb.insertItems(itemData, nowSeconds, req.query.query || 'javascript');
     }
 
-    // ToDo:正常時とError時で書き分ける
     return res.json(itemData);
+
+  } catch(err) {
+    return next(ErrorEnum.InternalServerError);
+  }
 
 }).post(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
     return next(ErrorEnum.MethodNotAllowed);
