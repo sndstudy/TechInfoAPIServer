@@ -3,10 +3,10 @@ import { IItemResponse } from "../dto/item_response";
 
 export class HackerNewsDbAccess extends BaseDbAccess {
 
-  async selectItems(targetSeconds: number): Promise<IItemResponse[]> {
+  async selectItems(targetSeconds: number, tagName: string): Promise<IItemResponse[]> {
     
     const db: FirebaseFirestore.Firestore = BaseDbAccess.app.firestore();
-    const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc("javascript");
+    const docRef: FirebaseFirestore.DocumentReference = db.collection("hackernews").doc(tagName);
     const collections: FirebaseFirestore.CollectionReference[] = 
       await docRef.getCollections().catch(() => {throw new Error("Firebase エラー")});
     
@@ -19,7 +19,7 @@ export class HackerNewsDbAccess extends BaseDbAccess {
 
     if(selectResult){
       const data: FirebaseFirestore.QuerySnapshot = 
-        await db.collection("hackernews").doc("javascript").collection(selectResult.id).get().catch(() => {throw new Error("Firebase エラー")});;
+        await db.collection("hackernews").doc(tagName).collection(selectResult.id).get().catch(() => {throw new Error("Firebase エラー")});;
       
       data.forEach((snapshot: FirebaseFirestore.QueryDocumentSnapshot ) => {
         returnItems.push(snapshot.data() as IItemResponse);

@@ -16,7 +16,7 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
       params: {
         page: req.query.page || 1,
         per_page: req.query.perPage || 20,
-        query: req.query.query || 'tag:JavaScript',
+        query: (req.query.query)? `tag:${req.query.query}` : 'tag:JavaScript',
       },
     };
 
@@ -26,7 +26,7 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
 
     // コレクション一覧取得
     const qiitaDb: QiitaDbAccess = new QiitaDbAccess();
-    let itemData: IItemResponse[]  = await qiitaDb.selectItems(targetSeconds);
+    let itemData: IItemResponse[]  = await qiitaDb.selectItems(targetSeconds, req.query.query);
 
     if(itemData.length === 0){
 
@@ -42,7 +42,7 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
       // 必要なものだけ取り出す
       itemData = data.map((item) => {
           return {
-              tags: (req.query.query)?[req.query.query] : ['javascript'],
+              tags: (req.query.query)?[req.query.query] : ['Javascript'],
               title: item.title,
               url: item.url,
               tweetUrl: `https://twitter.com/intent/tweet?text=${item.title}&url=${item.url}`,

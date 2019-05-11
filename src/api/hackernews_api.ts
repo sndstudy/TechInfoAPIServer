@@ -27,7 +27,7 @@ router.route("/").get(async (req: Express.Request, res: Express.Response, next: 
     // コレクション一覧取得
     const hackernewsDb: HackerNewsDbAccess = new HackerNewsDbAccess();
 
-    let itemData: IItemResponse[] = await hackernewsDb.selectItems(targetSeconds);
+    let itemData: IItemResponse[] = await hackernewsDb.selectItems(targetSeconds, req.query.query);
     
     if(itemData.length === 0){
 
