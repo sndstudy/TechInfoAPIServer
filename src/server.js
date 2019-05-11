@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Express = require("express");
 const qiita_api_1 = require("./api/qiita_api");
 const hackernews_api_1 = require("./api/hackernews_api");
+const error_handler_1 = require("./error/error_handler");
 const app = Express();
 // CORSを許可する
 app.use((req, res, next) => {
@@ -12,7 +13,7 @@ app.use((req, res, next) => {
 });
 app.use('/qiita', qiita_api_1.router);
 app.use('/hackernews', hackernews_api_1.router);
-// app.use('/uxmilk', UxMilkApi);
+app.use(error_handler_1.errorHandler);
 app.listen(3000, () => {
     console.log("Listen on port 3000.");
 });

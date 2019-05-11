@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const axios_1 = require("axios");
 const Express = require("express");
 const hackernews_db_access_1 = require("../db/hackernews_db_access");
+const error_enum_1 = require("../error/error_enum");
 exports.router = Express.Router();
 exports.router.route("/").get(async (req, res) => {
     const params = {
@@ -37,11 +38,11 @@ exports.router.route("/").get(async (req, res) => {
     }
     // ToDo:正常時とError時で書き分ける
     return res.status(200).json(itemData);
-}).post(async (req, res) => {
-    return res.status(405).json({ message: "Method Not Allowed" });
-}).put(async (req, res) => {
-    return res.status(405).json({ message: "Method Not Allowed" });
-}).delete(async (req, res) => {
-    return res.status(405).json({ message: "Method Not Allowed" });
+}).post(async (req, res, next) => {
+    return next(error_enum_1.ErrorEnum.MethodNotAllowed);
+}).put(async (req, res, next) => {
+    return next(error_enum_1.ErrorEnum.MethodNotAllowed);
+}).delete(async (req, res, next) => {
+    return next(error_enum_1.ErrorEnum.MethodNotAllowed);
 });
 //# sourceMappingURL=hackernews_api.js.map

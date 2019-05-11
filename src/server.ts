@@ -1,6 +1,7 @@
 import * as Express from "express";
 import { router as QiitaApi } from "./api/qiita_api";
 import { router as HackerNewsApi } from "./api/hackernews_api";
+import { errorHandler} from "./error/error_handler";
 
 const app = Express();
 
@@ -13,7 +14,7 @@ app.use((req: Express.Request, res: Express.Response, next: Express.NextFunction
 
 app.use('/qiita', QiitaApi);
 app.use('/hackernews', HackerNewsApi);
-// app.use('/uxmilk', UxMilkApi);
+app.use(errorHandler);
 
 app.listen(3000, () => {
     console.log("Listen on port 3000.");

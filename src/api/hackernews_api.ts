@@ -4,6 +4,7 @@ import { HackerNewsDbAccess } from "../db/hackernews_db_access";
 import { IItemResponse } from "../dto/item_response";
 import { IAxiosResponse } from "../dto/axios_response";
 import { IHackerNewsResponse } from "../dto/hackernews_response";
+import { ErrorEnum } from "../error/error_enum";
 
 export const router = Express.Router();
 
@@ -52,10 +53,10 @@ router.route("/").get(async (req: Express.Request, res: Express.Response) => {
     // ToDo:正常時とError時で書き分ける
     return res.status(200).json(itemData);
 
-}).post(async (req: Express.Request, res: Express.Response) => {
-    return res.status(405).json({message: "Method Not Allowed"});
-}).put(async (req: Express.Request, res: Express.Response) => {
-    return res.status(405).json({message: "Method Not Allowed"});
-}).delete(async (req: Express.Request, res: Express.Response) => {
-    return res.status(405).json({message: "Method Not Allowed"});
+}).post(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    return next(ErrorEnum.MethodNotAllowed);
+}).put(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    return next(ErrorEnum.MethodNotAllowed);
+}).delete(async (req: Express.Request, res: Express.Response, next: Express.NextFunction) => {
+    return next(ErrorEnum.MethodNotAllowed);
 });

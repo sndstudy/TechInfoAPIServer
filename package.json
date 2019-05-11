@@ -6,9 +6,8 @@
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "build": "tsc",
     "watch": "tsc --watch",
-    "parcel:build": "npm run build && npx parcel build --target node ./src/server.js",
+    "build": "tsc && npx parcel build --target node ./src/server.js",
     "lint": "tslint 'src/**/*.ts' && echo 'Lint all pass'"
   },
   "keywords": [],
