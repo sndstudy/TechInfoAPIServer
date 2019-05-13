@@ -1,7 +1,7 @@
 import * as Express from "express";
 import { router as QiitaApi } from "./api/qiita_api";
 import { router as HackerNewsApi } from "./api/hackernews_api";
-import { errorHandler} from "./error/error_handler";
+import { errorHandler } from "./error/error_handler";
 
 const app = Express();
 
@@ -16,6 +16,4 @@ app.use('/qiita', QiitaApi);
 app.use('/hackernews', HackerNewsApi);
 app.use(errorHandler);
 
-app.listen(3000, () => {
-    console.log("Listen on port 3000.");
-});
+app.listen(process.env.PORT || 3000);
