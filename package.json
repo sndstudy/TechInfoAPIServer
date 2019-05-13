@@ -4,7 +4,6 @@
   "description": "",
   "main": "./src/index.js",
   "scripts": {
-    "start": "node ./src/index.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "build": "tsc",
