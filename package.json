@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
+    "heroku-prebuild": "npm run build",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "build": "tsc && npx parcel build --target node ./src/index.js",
