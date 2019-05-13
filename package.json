@@ -2,13 +2,13 @@
   "name": "tech-info-api-server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "./src/index.js",
   "scripts": {
+    "start": "node ./src/index.js",
     "test": "jest",
     "test:coverage": "jest --coverage",
     "build": "tsc && npx parcel build --target node ./src/index.js",
-    "lint": "tslint 'src/**/*.ts' && echo 'Lint all pass'",
-    "start": "node ./src/index.js"
+    "lint": "tslint 'src/**/*.ts' && echo 'Lint all pass'"
   },
   "keywords": [],
   "author": "",
