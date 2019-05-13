@@ -8,7 +8,7 @@
     "heroku-prebuild": "npm run build",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "build": "tsc && npx parcel build --target node ./src/index.js",
+    "build": "tsc && parcel build --target node src/index.js -d ./",
     "lint": "tslint 'src/**/*.ts' && echo 'Lint all pass'"
   },
   "keywords": [],
