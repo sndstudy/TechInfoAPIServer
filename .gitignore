@@ -1,7 +1,4 @@
 /node_modules
-/dist
 /.cache
 /coverage
 tech-info-ss-serviceAccountKey.json
-*.js
-*.js.map
