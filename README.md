@@ -1,4 +1,4 @@
-# Template-TypeScript-NodeJS
+# TechInfoAPIServer
 
 ## npmスクリプト
 
